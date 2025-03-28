@@ -103,13 +103,13 @@ const AboutUs = () => {
         
         <Separator className="my-16" />
         
-        {/* Team Section */}
+        {/* Team Section - Only Hriday Kadam */}
         <div className="mb-16">
           <h2 className="text-3xl font-bold mb-10 text-center">Our Team</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="max-w-md mx-auto">
             {/* Hriday Kadam's Card */}
-            <Card className="bg-secondary/50 interactive-card col-span-full md:col-span-1">
+            <Card className="bg-secondary/50 interactive-card">
               <CardContent className="p-6">
                 <div className="flex flex-col items-center text-center">
                   <div className="w-24 h-24 rounded-full bg-vibehire-primary/20 flex items-center justify-center mb-4">
@@ -120,58 +120,31 @@ const AboutUs = () => {
                   
                   <div className="flex justify-center gap-3 mt-4">
                     <a 
-                      href="https://twitter.com" 
+                      href="https://x.com/hridaykadam" 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="p-2 rounded-full bg-vibehire-primary/10 hover:bg-vibehire-primary/20 transition-colors"
+                      aria-label="Twitter/X Profile"
                     >
                       <Twitter className="h-5 w-5 text-vibehire-primary" />
                     </a>
                     <a 
-                      href="https://linkedin.com" 
+                      href="https://www.linkedin.com/in/hridaykadam/" 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="p-2 rounded-full bg-vibehire-primary/10 hover:bg-vibehire-primary/20 transition-colors"
+                      aria-label="LinkedIn Profile"
                     >
                       <Linkedin className="h-5 w-5 text-vibehire-primary" />
                     </a>
                     <a 
                       href="mailto:hridaykadam1111@gmail.com" 
                       className="p-2 rounded-full bg-vibehire-primary/10 hover:bg-vibehire-primary/20 transition-colors"
+                      aria-label="Email"
                     >
                       <Mail className="h-5 w-5 text-vibehire-primary" />
                     </a>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-secondary/50 interactive-card">
-              <CardContent className="p-6">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-24 h-24 rounded-full bg-vibehire-primary/20 flex items-center justify-center mb-4">
-                    <span className="text-2xl font-bold text-vibehire-primary">AS</span>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-1">Alex Smith</h3>
-                  <p className="text-muted-foreground mb-4">CTO</p>
-                  <p className="text-sm">
-                    Leading our engineering team to build innovative features that revolutionize how professionals connect.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-secondary/50 interactive-card">
-              <CardContent className="p-6">
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-24 h-24 rounded-full bg-vibehire-primary/20 flex items-center justify-center mb-4">
-                    <span className="text-2xl font-bold text-vibehire-primary">MB</span>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-1">Mira Basu</h3>
-                  <p className="text-muted-foreground mb-4">Head of Design</p>
-                  <p className="text-sm">
-                    Creating intuitive and beautiful user experiences that make connecting with opportunities seamless.
-                  </p>
                 </div>
               </CardContent>
             </Card>

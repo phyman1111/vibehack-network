@@ -96,9 +96,9 @@ const VoicePitchCard = ({
   const togglePlay = () => {
     if (audioError) {
       toast({
-        title: "Audio Unavailable",
-        description: "This audio file cannot be played. Try another profile.",
-        variant: "destructive",
+        title: "Hey! This is just a demo",
+        description: "This audio file is a placeholder for demonstration purposes.",
+        variant: "default",
       });
       return;
     }
@@ -122,9 +122,9 @@ const VoicePitchCard = ({
           setAudioError(true);
           setIsPlaying(false);
           toast({
-            title: "Audio Unavailable",
-            description: "This audio file cannot be played. Try another profile.",
-            variant: "destructive",
+            title: "Hey! This is just a demo",
+            description: "This audio file is a placeholder for demonstration purposes.",
+            variant: "default",
           });
         });
         setIsPlaying(true);

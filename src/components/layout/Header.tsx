@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
-import { Search, BellRing, User, Menu } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { Search, BellRing, User, Menu, BellOff, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -15,15 +14,50 @@ import {
   DropdownMenuSubContent,
   DropdownMenuPortal
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { AppContext } from "../../App";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { 
+    isAnonymous, 
+    setIsAnonymous, 
+    searchQuery, 
+    setSearchQuery,
+    notifications,
+    markAllNotificationsAsRead 
+  } = useContext(AppContext);
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
+  
+  // Initialize local search with global search on component mount
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
   
   const isActive = (path: string) => {
     return location.pathname === path ? "text-vibehire-primary font-medium" : "text-foreground/80 hover:text-foreground transition-colors";
   };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchQuery(localSearchQuery);
+    navigate("/discover");
+    toast.success(`Searching for "${localSearchQuery}"`);
+  };
+
+  const unreadNotificationsCount = notifications.filter(n => !n.read).length;
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border">
@@ -85,13 +119,60 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="hidden md:flex">
-            <Search className="h-5 w-5" />
-          </Button>
+          <form onSubmit={handleSearch} className="hidden md:flex relative">
+            <Input
+              value={localSearchQuery}
+              onChange={(e) => setLocalSearchQuery(e.target.value)}
+              placeholder="Search talents or jobs..."
+              className="w-64 pl-10"
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Button type="submit" variant="ghost" className="absolute right-0 top-0 h-full">
+              <span className="sr-only">Search</span>
+            </Button>
+          </form>
           
-          <Button variant="ghost" size="icon" className="hidden md:flex">
-            <BellRing className="h-5 w-5" />
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative hidden md:flex">
+                <BellRing className="h-5 w-5" />
+                {unreadNotificationsCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-vibehire-primary">
+                    {unreadNotificationsCount}
+                  </Badge>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-80 p-0">
+              <div className="p-3 border-b border-border flex items-center justify-between">
+                <h3 className="font-semibold">Notifications</h3>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 text-sm text-muted-foreground hover:text-foreground"
+                  onClick={markAllNotificationsAsRead}
+                >
+                  Mark all as read
+                </Button>
+              </div>
+              <div className="max-h-80 overflow-y-auto">
+                {notifications.length > 0 ? (
+                  notifications.map(notification => (
+                    <div 
+                      key={notification.id} 
+                      className={`p-3 border-b border-border ${notification.read ? '' : 'bg-secondary/40'}`}
+                    >
+                      <p className="text-sm">{notification.text}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-3 text-center text-muted-foreground">
+                    No notifications
+                  </div>
+                )}
+              </div>
+            </PopoverContent>
+          </Popover>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -99,17 +180,26 @@ const Header = () => {
                 <User className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Account</DropdownMenuLabel>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Account Settings</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/profile">Profile</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/settings">Settings</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Sign out</DropdownMenuItem>
+              <div className="p-2">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label>Anonymous Mode</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Hide your identity from other users
+                    </p>
+                  </div>
+                  <Switch
+                    checked={isAnonymous}
+                    onCheckedChange={(checked) => {
+                      setIsAnonymous(checked);
+                      toast.success(`Anonymous mode ${checked ? 'enabled' : 'disabled'}`);
+                    }}
+                  />
+                </div>
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
 

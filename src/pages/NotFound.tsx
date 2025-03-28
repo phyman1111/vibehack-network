@@ -27,15 +27,20 @@ const NotFound = () => {
           <h1 className="text-6xl font-bold text-gradient mb-4">404</h1>
           <p className="text-xl text-muted-foreground mb-6">Oops! Page not found</p>
           <p className="text-muted-foreground mb-8">
-            The page you're looking for doesn't exist or has been moved. 
-            Please check the URL or navigate back to our homepage.
+            The page you're looking for doesn't exist. You can explore our main features below:
           </p>
           <div className="space-y-4">
             <Button asChild className="bg-blue-gradient hover:opacity-90 w-full">
               <Link to="/">Return to Home</Link>
             </Button>
-            <Button variant="outline" asChild className="w-full">
+            <Button asChild variant="outline" className="w-full">
               <Link to="/discover">Discover Talent</Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/jobs">Browse Jobs</Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full">
+              <Link to="/about">About VibeHire</Link>
             </Button>
           </div>
         </div>

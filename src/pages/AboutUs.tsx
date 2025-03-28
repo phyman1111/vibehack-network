@@ -1,129 +1,229 @@
 
 import Layout from "@/components/layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
-import { Twitter, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Video, Mic, Eye, Users, ArrowRight, Twitter, Linkedin, Mail } from "lucide-react";
 
 const AboutUs = () => {
   return (
     <Layout>
-      <div className="container py-16">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-6 text-center">About VibeHire</h1>
-          <p className="text-lg text-muted-foreground mb-12 text-center">
-            Revolutionizing professional networking through video resumes and authentic connections
+      <div className="container py-10">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">About VibeHire</h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Revolutionizing professional networking through authentic video and voice connections
           </p>
-
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold mb-4">Our Mission</h2>
-            <p className="text-muted-foreground mb-6">
-              At VibeHire, we're on a mission to transform how professionals connect in the digital age. 
-              We believe that traditional resumes fail to capture the essence of a person's skills, personality, 
-              and potential. That's why we've built a platform that leverages the power of video and audio to
-              create more meaningful connections between talent and opportunities.
+        </div>
+        
+        {/* Mission Section */}
+        <div className="mb-16 grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 className="text-3xl font-bold mb-4">Our Mission</h2>
+            <p className="text-lg text-muted-foreground mb-6">
+              At VibeHire, our mission is to transform professional networking from outdated resume exchanges 
+              to authentic connections based on personality, skills, and potential rather than just credentials.
             </p>
-            <p className="text-muted-foreground mb-6">
-              We're passionate about creating a space where professionals can showcase their authentic selves,
-              while also providing tools that reduce bias in the hiring process through our anonymous talent mode.
-              Our goal is to make the job search and recruitment process more human, more efficient, and more equitable.
-            </p>
-          </div>
-
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold mb-4">Our Vision</h2>
-            <p className="text-muted-foreground mb-6">
-              We envision a future where professional connections are formed based on a holistic understanding of skills, 
-              experiences, and personality - not just keywords on a resume. VibeHire aims to be the bridge that connects 
-              talented individuals with organizations that value their unique contributions.
-            </p>
-            <p className="text-muted-foreground mb-6">
-              By leveraging cutting-edge technology and innovative design, we're creating a platform that makes it easier 
-              for professionals to stand out and for recruiters to find the perfect match for their teams. We believe that 
-              when the right people connect, amazing things happen.
+            <p className="text-lg text-muted-foreground">
+              We believe that traditional text-based resumes fail to capture the essence of a person, which is why 
+              we've built a platform that uses video and voice to showcase who professionals truly are.
             </p>
           </div>
-
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold mb-8 text-center">Our Team</h2>
-            <div className="flex justify-center">
-              <Card className="w-full max-w-md bg-gradient-to-br from-vibehire-primary/10 to-vibehire-accent/10 overflow-hidden">
-                <div className="h-20 bg-gradient-to-r from-vibehire-primary/20 to-vibehire-accent/20"></div>
-                <CardContent className="pt-6 pb-6">
-                  <div className="text-center">
-                    <div className="w-20 h-20 bg-vibehire-primary/20 rounded-full mx-auto flex items-center justify-center">
-                      <span className="text-2xl font-bold text-vibehire-primary">HK</span>
-                    </div>
-                    <h3 className="text-xl font-bold mt-4">Hriday Kadam</h3>
-                    <p className="text-muted-foreground mb-6">Founder & CEO</p>
-                    
-                    <div className="flex justify-center space-x-4">
-                      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-vibehire-primary/10 hover:text-vibehire-primary">
-                          <Twitter className="h-5 w-5" />
-                          <span className="sr-only">Twitter</span>
-                        </Button>
-                      </a>
-                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-vibehire-primary/10 hover:text-vibehire-primary">
-                          <Linkedin className="h-5 w-5" />
-                          <span className="sr-only">LinkedIn</span>
-                        </Button>
-                      </a>
-                      <a href="mailto:hridaykadam1111@gmail.com">
-                        <Button variant="ghost" size="icon" className="rounded-full hover:bg-vibehire-primary/10 hover:text-vibehire-primary">
-                          <Mail className="h-5 w-5" />
-                          <span className="sr-only">Email</span>
-                        </Button>
-                      </a>
-                    </div>
+          <div className="bg-gradient-to-r from-vibehire-primary/30 to-vibehire-accent/30 p-10 rounded-lg">
+            <h3 className="text-2xl font-bold mb-4">Our Vision</h3>
+            <p className="mb-6">
+              A professional world where opportunities are matched based on genuine compatibility rather than 
+              keyword matching or company names.
+            </p>
+            <ul className="space-y-4">
+              <li className="flex items-start">
+                <div className="bg-vibehire-primary/20 p-1 rounded mr-3 mt-1">
+                  <ArrowRight className="h-4 w-4 text-vibehire-primary" />
+                </div>
+                <span>Breaking down barriers that prevent great talent from being discovered</span>
+              </li>
+              <li className="flex items-start">
+                <div className="bg-vibehire-primary/20 p-1 rounded mr-3 mt-1">
+                  <ArrowRight className="h-4 w-4 text-vibehire-primary" />
+                </div>
+                <span>Creating a truly level playing field through anonymous talent mode</span>
+              </li>
+              <li className="flex items-start">
+                <div className="bg-vibehire-primary/20 p-1 rounded mr-3 mt-1">
+                  <ArrowRight className="h-4 w-4 text-vibehire-primary" />
+                </div>
+                <span>Building technology that puts humans first in the hiring process</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        {/* Core Features Section */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold mb-10 text-center">What Makes Us Different</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="bg-secondary/50 interactive-card">
+              <CardContent className="pt-6">
+                <div className="w-12 h-12 rounded-full bg-vibehire-primary/20 flex items-center justify-center mb-4">
+                  <Video className="h-6 w-6 text-vibehire-primary" />
+                </div>
+                <h3 className="text-xl font-medium mb-2">Video Resumes</h3>
+                <p className="text-muted-foreground">
+                  Our platform prioritizes engaging video introductions that showcase personality, communication skills, and passion - the human elements that no text resume can capture.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-secondary/50 interactive-card">
+              <CardContent className="pt-6">
+                <div className="w-12 h-12 rounded-full bg-vibehire-primary/20 flex items-center justify-center mb-4">
+                  <Mic className="h-6 w-6 text-vibehire-primary" />
+                </div>
+                <h3 className="text-xl font-medium mb-2">Voice Pitches</h3>
+                <p className="text-muted-foreground">
+                  For professionals who prefer audio, our voice pitch feature allows for concise, compelling introductions that busy recruiters can listen to while on the go.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-secondary/50 interactive-card">
+              <CardContent className="pt-6">
+                <div className="w-12 h-12 rounded-full bg-vibehire-primary/20 flex items-center justify-center mb-4">
+                  <Eye className="h-6 w-6 text-vibehire-primary" />
+                </div>
+                <h3 className="text-xl font-medium mb-2">Anonymous Mode</h3>
+                <p className="text-muted-foreground">
+                  Our anonymous talent mode helps eliminate bias by focusing on skills and experience without revealing identifying information, ensuring fair evaluation of all candidates.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        
+        <Separator className="my-16" />
+        
+        {/* Team Section */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold mb-10 text-center">Our Team</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Hriday Kadam's Card */}
+            <Card className="bg-secondary/50 interactive-card col-span-full md:col-span-1">
+              <CardContent className="p-6">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-24 h-24 rounded-full bg-vibehire-primary/20 flex items-center justify-center mb-4">
+                    <span className="text-2xl font-bold text-vibehire-primary">HK</span>
                   </div>
-                </CardContent>
-              </Card>
+                  <h3 className="text-xl font-semibold mb-1">Hriday Kadam</h3>
+                  <p className="text-muted-foreground mb-4">Founder & CEO</p>
+                  
+                  <div className="flex justify-center gap-3 mt-4">
+                    <a 
+                      href="https://twitter.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="p-2 rounded-full bg-vibehire-primary/10 hover:bg-vibehire-primary/20 transition-colors"
+                    >
+                      <Twitter className="h-5 w-5 text-vibehire-primary" />
+                    </a>
+                    <a 
+                      href="https://linkedin.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="p-2 rounded-full bg-vibehire-primary/10 hover:bg-vibehire-primary/20 transition-colors"
+                    >
+                      <Linkedin className="h-5 w-5 text-vibehire-primary" />
+                    </a>
+                    <a 
+                      href="mailto:hridaykadam1111@gmail.com" 
+                      className="p-2 rounded-full bg-vibehire-primary/10 hover:bg-vibehire-primary/20 transition-colors"
+                    >
+                      <Mail className="h-5 w-5 text-vibehire-primary" />
+                    </a>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-secondary/50 interactive-card">
+              <CardContent className="p-6">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-24 h-24 rounded-full bg-vibehire-primary/20 flex items-center justify-center mb-4">
+                    <span className="text-2xl font-bold text-vibehire-primary">AS</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-1">Alex Smith</h3>
+                  <p className="text-muted-foreground mb-4">CTO</p>
+                  <p className="text-sm">
+                    Leading our engineering team to build innovative features that revolutionize how professionals connect.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-secondary/50 interactive-card">
+              <CardContent className="p-6">
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-24 h-24 rounded-full bg-vibehire-primary/20 flex items-center justify-center mb-4">
+                    <span className="text-2xl font-bold text-vibehire-primary">MB</span>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-1">Mira Basu</h3>
+                  <p className="text-muted-foreground mb-4">Head of Design</p>
+                  <p className="text-sm">
+                    Creating intuitive and beautiful user experiences that make connecting with opportunities seamless.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        
+        {/* Stats Section */}
+        <div className="mb-16 py-10 bg-gradient-to-r from-vibehire-primary/5 to-vibehire-accent/10 rounded-lg">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold">Our Impact</h2>
+            <p className="text-muted-foreground">Transforming professional networking, one connection at a time</p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <p className="text-4xl font-bold text-vibehire-primary mb-2">10K+</p>
+              <p className="text-sm text-muted-foreground">Professionals</p>
+            </div>
+            <div className="text-center">
+              <p className="text-4xl font-bold text-vibehire-primary mb-2">500+</p>
+              <p className="text-sm text-muted-foreground">Companies</p>
+            </div>
+            <div className="text-center">
+              <p className="text-4xl font-bold text-vibehire-primary mb-2">2,500+</p>
+              <p className="text-sm text-muted-foreground">Successful Matches</p>
+            </div>
+            <div className="text-center">
+              <p className="text-4xl font-bold text-vibehire-primary mb-2">30+</p>
+              <p className="text-sm text-muted-foreground">Countries</p>
             </div>
           </div>
-
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold mb-4">Our Values</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 bg-vibehire-primary/10 rounded-lg">
-                <h3 className="text-xl font-medium mb-2">Authenticity</h3>
-                <p className="text-muted-foreground">
-                  We believe in the power of authentic connections and encourage professionals 
-                  to showcase their true selves.
-                </p>
-              </div>
-              <div className="p-6 bg-vibehire-primary/10 rounded-lg">
-                <h3 className="text-xl font-medium mb-2">Innovation</h3>
-                <p className="text-muted-foreground">
-                  We constantly push the boundaries of what's possible in professional 
-                  networking through technology and design.
-                </p>
-              </div>
-              <div className="p-6 bg-vibehire-primary/10 rounded-lg">
-                <h3 className="text-xl font-medium mb-2">Inclusivity</h3>
-                <p className="text-muted-foreground">
-                  We're committed to creating a platform that reduces bias and provides 
-                  equal opportunities for all professionals.
-                </p>
-              </div>
-              <div className="p-6 bg-vibehire-primary/10 rounded-lg">
-                <h3 className="text-xl font-medium mb-2">Excellence</h3>
-                <p className="text-muted-foreground">
-                  We strive for excellence in everything we do, from our platform's 
-                  user experience to our customer support.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">Join the Revolution</h2>
-            <p className="text-muted-foreground mb-8">
-              Ready to transform how you connect with professional opportunities? 
-              Join VibeHire today and be part of the future of professional networking.
-            </p>
-            <Button className="bg-blue-gradient hover:opacity-90 text-white glow-button" size="lg">
-              Get Started Now
+        </div>
+        
+        {/* CTA Section */}
+        <div className="text-center max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold mb-4">Join the Revolution</h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Ready to experience a new way of professional networking? Join VibeHire today and showcase your authentic self.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              className="bg-blue-gradient hover:opacity-90 text-white"
+              size="lg"
+            >
+              Create Your Profile
+            </Button>
+            <Button 
+              variant="outline" 
+              className="border-vibehire-primary text-vibehire-primary hover:bg-vibehire-primary/10"
+              size="lg"
+            >
+              Learn More
             </Button>
           </div>
         </div>

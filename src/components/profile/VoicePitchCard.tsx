@@ -33,22 +33,39 @@ const VoicePitchCard = ({
   const [likesCount, setLikesCount] = useState(Math.floor(Math.random() * 50));
   const { toast } = useToast();
   const [audioError, setAudioError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.addEventListener('timeupdate', updateProgress);
-      audioRef.current.addEventListener('ended', handleAudioEnd);
-      audioRef.current.addEventListener('error', handleAudioError);
-    }
-
+    // Create audio element
+    const audio = new Audio(audioUrl);
+    audioRef.current = audio;
+    
+    // Reset states when audioUrl changes
+    setAudioError(false);
+    setIsLoading(true);
+    setIsPlaying(false);
+    setProgress(0);
+    setCurrentTime(0);
+    
+    // Add event listeners
+    audio.addEventListener('timeupdate', updateProgress);
+    audio.addEventListener('ended', handleAudioEnd);
+    audio.addEventListener('error', handleAudioError);
+    audio.addEventListener('loadeddata', handleAudioLoaded);
+    
+    // Preload audio metadata
+    audio.preload = 'metadata';
+    
+    // Clean up
     return () => {
-      if (audioRef.current) {
-        audioRef.current.removeEventListener('timeupdate', updateProgress);
-        audioRef.current.removeEventListener('ended', handleAudioEnd);
-        audioRef.current.removeEventListener('error', handleAudioError);
-      }
+      audio.removeEventListener('timeupdate', updateProgress);
+      audio.removeEventListener('ended', handleAudioEnd);
+      audio.removeEventListener('error', handleAudioError);
+      audio.removeEventListener('loadeddata', handleAudioLoaded);
+      audio.pause();
+      audio.src = '';
     };
-  }, []);
+  }, [audioUrl]);
 
   const handleAudioEnd = () => {
     setIsPlaying(false);
@@ -56,10 +73,16 @@ const VoicePitchCard = ({
     setCurrentTime(0);
   };
 
-  const handleAudioError = () => {
+  const handleAudioError = (e: Event) => {
+    console.error("Audio error:", e);
     setAudioError(true);
     setIsPlaying(false);
+    setIsLoading(false);
     console.log("Audio error for:", audioUrl);
+  };
+  
+  const handleAudioLoaded = () => {
+    setIsLoading(false);
   };
 
   const updateProgress = () => {
@@ -80,23 +103,33 @@ const VoicePitchCard = ({
       return;
     }
 
+    if (isLoading) {
+      toast({
+        title: "Loading Audio",
+        description: "The audio is still loading. Please wait a moment.",
+      });
+      return;
+    }
+
     if (isPlaying) {
       audioRef.current?.pause();
+      setIsPlaying(false);
     } else {
       const playPromise = audioRef.current?.play();
       if (playPromise) {
         playPromise.catch(error => {
           console.error("Play failed:", error);
           setAudioError(true);
+          setIsPlaying(false);
           toast({
             title: "Audio Unavailable",
             description: "This audio file cannot be played. Try another profile.",
             variant: "destructive",
           });
         });
+        setIsPlaying(true);
       }
     }
-    setIsPlaying(!isPlaying);
   };
 
   const toggleBookmark = () => {
@@ -114,6 +147,13 @@ const VoicePitchCard = ({
       description: `You liked ${isAnonymous ? "an anonymous profile" : name}'s voice pitch.`,
     });
   };
+  
+  const handleShare = () => {
+    toast({
+      title: "Share Profile",
+      description: `Sharing options for ${isAnonymous ? "this anonymous profile" : name} will appear soon.`,
+    });
+  };
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -123,7 +163,6 @@ const VoicePitchCard = ({
 
   return (
     <Card className="overflow-hidden interactive-card bg-secondary/50">
-      <audio ref={audioRef} src={audioUrl} />
       <div className="h-32 bg-gradient-to-r from-vibehire-primary/20 to-vibehire-accent/20 flex items-center justify-center">
         <div className="relative p-4 w-full h-full flex flex-col justify-center">
           <div className="absolute inset-0 flex items-center justify-center opacity-30">
@@ -133,7 +172,8 @@ const VoicePitchCard = ({
                 className="w-px bg-vibehire-primary/50"
                 style={{ 
                   height: `${20 + Math.sin(i * 0.5) * 20}px`,
-                  marginLeft: '3px'
+                  marginLeft: '3px',
+                  animation: isPlaying ? `pulse 1s ease-in-out ${i * 0.05}s infinite alternate` : 'none'
                 }}
               ></div>
             ))}
@@ -145,6 +185,7 @@ const VoicePitchCard = ({
               variant="outline" 
               size="icon" 
               className="rounded-full bg-vibehire-primary/20 border-vibehire-primary/50 hover:bg-vibehire-primary/30 backdrop-blur-sm"
+              disabled={isLoading && !audioError}
             >
               {isPlaying ? (
                 <Pause className="h-5 w-5 text-white" />
@@ -158,7 +199,7 @@ const VoicePitchCard = ({
             <Progress value={progress} className="h-1.5" />
             <div className="flex justify-between mt-1 text-xs text-foreground/70">
               <span>{formatTime(currentTime)}</span>
-              <span>{formatTime(duration)}</span>
+              <span>{formatTime(audioRef.current?.duration || duration)}</span>
             </div>
           </div>
         </div>
@@ -210,6 +251,7 @@ const VoicePitchCard = ({
               variant="ghost" 
               size="icon" 
               className="rounded-full"
+              onClick={handleShare}
             >
               <Share2 className="h-5 w-5 text-muted-foreground" />
               <span className="sr-only">Share</span>
@@ -217,6 +259,17 @@ const VoicePitchCard = ({
           </div>
         </div>
       </CardContent>
+      
+      <style jsx>{`
+        @keyframes pulse {
+          0% {
+            height: 10px;
+          }
+          100% {
+            height: 40px;
+          }
+        }
+      `}</style>
     </Card>
   );
 };

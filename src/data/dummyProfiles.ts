@@ -85,22 +85,61 @@ const generateRandomName = () => {
   return `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${lastNames[Math.floor(Math.random() * lastNames.length)]}`;
 };
 
+// Generate video and audio URLs
+const generateMedia = (index: number) => {
+  // Use real sample media URLs that will work in the browser
+  const sampleVideos = [
+    "https://assets.mixkit.co/videos/preview/mixkit-portrait-of-a-fashion-woman-with-silver-makeup-39171-small.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-man-giving-a-speech-inside-a-conference-room-1175-small.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-young-woman-talking-on-a-business-meeting-42675-small.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-man-speaking-while-standing-in-a-startup-company-37724-small.mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-businesswoman-speaking-at-a-business-interview-43489-small.mp4"
+  ];
+  
+  const sampleAudio = [
+    "https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3",
+    "https://assets.mixkit.co/music/preview/mixkit-serene-view-443.mp3",
+    "https://assets.mixkit.co/music/preview/mixkit-hazy-after-hours-132.mp3",
+    "https://assets.mixkit.co/music/preview/mixkit-raising-me-higher-34.mp3",
+    "https://assets.mixkit.co/music/preview/mixkit-hip-hop-02-738.mp3"
+  ];
+  
+  const sampleThumbnails = [
+    "https://images.unsplash.com/photo-1573497491765-dccce02b29df?auto=format&fit=crop&w=500&q=80",
+    "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=500&q=80",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=500&q=80",
+    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=500&q=80",
+    "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80"
+  ];
+
+  const videoIndex = index % sampleVideos.length;
+  const audioIndex = index % sampleAudio.length;
+  const thumbnailIndex = index % sampleThumbnails.length;
+  
+  return {
+    videoUrl: sampleVideos[videoIndex],
+    audioUrl: sampleAudio[audioIndex],
+    thumbnailUrl: sampleThumbnails[thumbnailIndex]
+  };
+};
+
 // Generate 1000 dummy profiles
 const generateDummyProfiles = (count: number): Profile[] => {
   const profiles: Profile[] = [];
   
   for (let i = 0; i < count; i++) {
-    const hasVideo = Math.random() > 0.5;
+    const hasVideo = Math.random() > 0.3;
     const hasAudio = !hasVideo || Math.random() > 0.3; // Ensure at least one media type
+    const media = generateMedia(i);
     
     profiles.push({
       id: `profile-${i + 1}`,
       name: generateRandomName(),
       title: generateRandomTitle(),
       skills: generateRandomSkills(),
-      videoUrl: hasVideo ? `/placeholder-video.mp4` : undefined,
-      audioUrl: hasAudio ? `/placeholder-audio.mp3` : undefined,
-      thumbnailUrl: hasVideo ? `/placeholder-thumbnail.jpg` : undefined,
+      videoUrl: hasVideo ? media.videoUrl : undefined,
+      audioUrl: hasAudio ? media.audioUrl : undefined,
+      thumbnailUrl: hasVideo ? media.thumbnailUrl : undefined,
       isAnonymous: Math.random() > 0.7, // 30% chance to be anonymous
       audioDuration: hasAudio ? Math.floor(Math.random() * 120) + 30 : undefined, // 30-150 seconds
     });

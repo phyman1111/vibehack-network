@@ -1,17 +1,29 @@
 
 import { Button } from "@/components/ui/button";
 import { Search, BellRing, User, Menu } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  
+  const isActive = (path: string) => {
+    return location.pathname === path ? "text-vibehire-primary font-medium" : "text-foreground/80 hover:text-foreground transition-colors";
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border">
@@ -25,15 +37,50 @@ const Header = () => {
           </Link>
           
           <nav className="hidden md:flex items-center gap-6">
-            <Link to="/discover" className="text-foreground/80 hover:text-foreground transition-colors">
+            <Link to="/discover" className={isActive("/discover")}>
               Discover
             </Link>
-            <Link to="/jobs" className="text-foreground/80 hover:text-foreground transition-colors">
+            <Link to="/jobs" className={isActive("/jobs")}>
               Jobs
             </Link>
-            <Link to="/connections" className="text-foreground/80 hover:text-foreground transition-colors">
-              Connections
-            </Link>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="text-foreground/80 hover:text-foreground transition-colors">
+                  Company
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link to="/about">About Us</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/careers">Careers</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/contact">Contact</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="text-foreground/80 hover:text-foreground transition-colors">
+                  Legal
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link to="/privacy">Privacy Policy</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/terms">Terms of Service</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/cookies">Cookie Policy</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
 
@@ -53,12 +100,15 @@ const Header = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link to="/profile">Profile</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link to="/settings">Settings</Link>
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem>Sign out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -83,9 +133,34 @@ const Header = () => {
             <Link to="/jobs" className="text-foreground/80 hover:text-foreground transition-colors py-2">
               Jobs
             </Link>
-            <Link to="/connections" className="text-foreground/80 hover:text-foreground transition-colors py-2">
-              Connections
-            </Link>
+            <div className="py-2">
+              <p className="text-sm font-medium text-muted-foreground mb-2">Company</p>
+              <div className="pl-4 space-y-2">
+                <Link to="/about" className="block text-foreground/80 hover:text-foreground transition-colors">
+                  About Us
+                </Link>
+                <Link to="/careers" className="block text-foreground/80 hover:text-foreground transition-colors">
+                  Careers
+                </Link>
+                <Link to="/contact" className="block text-foreground/80 hover:text-foreground transition-colors">
+                  Contact
+                </Link>
+              </div>
+            </div>
+            <div className="py-2">
+              <p className="text-sm font-medium text-muted-foreground mb-2">Legal</p>
+              <div className="pl-4 space-y-2">
+                <Link to="/privacy" className="block text-foreground/80 hover:text-foreground transition-colors">
+                  Privacy Policy
+                </Link>
+                <Link to="/terms" className="block text-foreground/80 hover:text-foreground transition-colors">
+                  Terms of Service
+                </Link>
+                <Link to="/cookies" className="block text-foreground/80 hover:text-foreground transition-colors">
+                  Cookie Policy
+                </Link>
+              </div>
+            </div>
           </nav>
         </div>
       )}

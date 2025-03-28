@@ -6,10 +6,17 @@ import { Video, Mic, Eye, Briefcase, Star, Users } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AnonymousToggle from "@/components/profile/AnonymousToggle";
+import VideoResumeCard from "@/components/profile/VideoResumeCard";
+import VoicePitchCard from "@/components/profile/VoicePitchCard";
+import { getRandomProfiles } from "@/data/dummyProfiles";
 
 const Index = () => {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const navigate = useNavigate();
+  
+  // Get a few random profiles for the featured section
+  const featuredVideoProfiles = getRandomProfiles(3).filter(p => p.videoUrl);
+  const featuredAudioProfiles = getRandomProfiles(3).filter(p => p.audioUrl);
 
   return (
     <Layout>
@@ -42,20 +49,20 @@ const Index = () => {
               variant="outline" 
               size="lg"
               className="border-vibehire-primary text-vibehire-primary hover:bg-vibehire-primary/10"
-              onClick={() => navigate("/profile/create")}
+              onClick={() => navigate("/about")}
             >
-              Create Your Profile
+              Learn More
             </Button>
           </div>
           
           <div className="mt-16">
             <p className="text-sm text-muted-foreground mb-4">Trusted by professionals from</p>
             <div className="flex flex-wrap justify-center gap-8 opacity-70">
-              <img src="https://via.placeholder.com/120x40" alt="Company logo" className="h-8" />
-              <img src="https://via.placeholder.com/120x40" alt="Company logo" className="h-8" />
-              <img src="https://via.placeholder.com/120x40" alt="Company logo" className="h-8" />
-              <img src="https://via.placeholder.com/120x40" alt="Company logo" className="h-8" />
-              <img src="https://via.placeholder.com/120x40" alt="Company logo" className="h-8" />
+              <div className="h-8 w-28 bg-vibehire-primary/20 rounded flex items-center justify-center text-sm">TechCorp</div>
+              <div className="h-8 w-28 bg-vibehire-primary/20 rounded flex items-center justify-center text-sm">InnoSoft</div>
+              <div className="h-8 w-28 bg-vibehire-primary/20 rounded flex items-center justify-center text-sm">DataDynamics</div>
+              <div className="h-8 w-28 bg-vibehire-primary/20 rounded flex items-center justify-center text-sm">CloudNative</div>
+              <div className="h-8 w-28 bg-vibehire-primary/20 rounded flex items-center justify-center text-sm">QuantumTech</div>
             </div>
           </div>
         </div>
@@ -148,6 +155,61 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Featured Profiles Section */}
+      <section className="py-16">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Featured Talent</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
+              Discover top professionals showcasing their skills through video resumes and voice pitches
+            </p>
+            <Button 
+              onClick={() => navigate("/discover")}
+              variant="outline" 
+              className="border-vibehire-primary text-vibehire-primary hover:bg-vibehire-primary/10 mb-8"
+            >
+              View All Talent
+            </Button>
+          </div>
+          
+          <div className="mb-12">
+            <h3 className="text-xl font-bold mb-6">Video Resumes</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredVideoProfiles.map(profile => (
+                <VideoResumeCard
+                  key={profile.id}
+                  id={profile.id}
+                  name={profile.name}
+                  title={profile.title}
+                  videoUrl={profile.videoUrl || ''}
+                  thumbnailUrl={profile.thumbnailUrl || ''}
+                  skills={profile.skills}
+                  isAnonymous={profile.isAnonymous}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold mb-6">Voice Pitches</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredAudioProfiles.map(profile => (
+                <VoicePitchCard
+                  key={profile.id}
+                  id={profile.id}
+                  name={profile.name}
+                  title={profile.title}
+                  audioUrl={profile.audioUrl || ''}
+                  skills={profile.skills}
+                  duration={profile.audioDuration || 60}
+                  isAnonymous={profile.isAnonymous}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Anonymous Mode Demo */}
       <section className="py-16">
         <div className="container">
@@ -171,11 +233,9 @@ const Index = () => {
                     <Eye className="h-8 w-8 text-vibehire-gray" />
                   </div>
                 ) : (
-                  <img 
-                    src="https://via.placeholder.com/150" 
-                    alt="Profile" 
-                    className="w-16 h-16 rounded-full object-cover"
-                  />
+                  <div className="w-16 h-16 rounded-full bg-vibehire-primary/20 flex items-center justify-center">
+                    <span className="text-xl font-bold text-vibehire-primary">SJ</span>
+                  </div>
                 )}
                 <div className="ml-4">
                   <h3 className="text-xl font-medium">
@@ -257,6 +317,7 @@ const Index = () => {
             <Button 
               className="bg-blue-gradient hover:opacity-90 text-white"
               size="lg"
+              onClick={() => navigate("/discover")}
             >
               Get Started Now
             </Button>
@@ -264,6 +325,7 @@ const Index = () => {
               variant="outline" 
               className="border-vibehire-primary text-vibehire-primary hover:bg-vibehire-primary/10"
               size="lg"
+              onClick={() => navigate("/about")}
             >
               Learn More
             </Button>

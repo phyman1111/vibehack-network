@@ -2,7 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, Volume2, Bookmark, Share2, ThumbsUp } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface VideoResumeCardProps {
   id: string;
@@ -26,17 +27,43 @@ const VideoResumeCard = ({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [likesCount, setLikesCount] = useState(Math.floor(Math.random() * 100));
+  const [videoError, setVideoError] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { toast } = useToast();
 
   const togglePlay = () => {
+    if (videoError) {
+      toast({
+        title: "Video Unavailable",
+        description: "This video file cannot be played. Try another profile.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsPlaying(!isPlaying);
+  };
+
+  const handleVideoError = () => {
+    setVideoError(true);
+    setIsPlaying(false);
+    console.log("Video error for:", videoUrl);
   };
 
   const toggleBookmark = () => {
     setIsBookmarked(!isBookmarked);
+    toast({
+      title: isBookmarked ? "Removed from bookmarks" : "Added to bookmarks",
+      description: `${isAnonymous ? "Anonymous profile" : name} has been ${isBookmarked ? "removed from" : "added to"} your bookmarks.`,
+    });
   };
 
   const handleLike = () => {
     setLikesCount(likesCount + 1);
+    toast({
+      title: "Profile liked",
+      description: `You liked ${isAnonymous ? "an anonymous profile" : name}'s video resume.`,
+    });
   };
 
   return (
@@ -44,28 +71,27 @@ const VideoResumeCard = ({
       <div className="relative aspect-video bg-gray-900 overflow-hidden">
         {!isPlaying ? (
           <>
-            <img 
-              src={thumbnailUrl} 
-              alt={`${name}'s video resume thumbnail`} 
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-center justify-center">
-              <Button 
-                onClick={togglePlay} 
-                variant="outline" 
-                size="icon" 
-                className="rounded-full bg-vibehire-primary/20 border-vibehire-primary/50 hover:bg-vibehire-primary/30 backdrop-blur-sm"
-              >
-                <Play className="h-5 w-5 text-white" />
-              </Button>
+            <div className="w-full h-full bg-gradient-to-br from-vibehire-primary/20 to-vibehire-accent/20 flex items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-center justify-center">
+                <Button 
+                  onClick={togglePlay} 
+                  variant="outline" 
+                  size="icon" 
+                  className="rounded-full bg-vibehire-primary/20 border-vibehire-primary/50 hover:bg-vibehire-primary/30 backdrop-blur-sm"
+                >
+                  <Play className="h-5 w-5 text-white" />
+                </Button>
+              </div>
             </div>
           </>
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-800">
             <video 
+              ref={videoRef}
               controls 
               autoPlay
               className="w-full h-full object-cover"
+              onError={handleVideoError}
               onPause={() => setIsPlaying(false)}
             >
               <source src={videoUrl} type="video/mp4" />

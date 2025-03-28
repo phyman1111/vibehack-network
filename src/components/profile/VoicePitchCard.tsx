@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Volume2, Pause, Bookmark, Share2, ThumbsUp, Music } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 
 interface VoicePitchCardProps {
   id: string;
@@ -30,28 +31,36 @@ const VoicePitchCard = ({
   const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [likesCount, setLikesCount] = useState(Math.floor(Math.random() * 50));
+  const { toast } = useToast();
+  const [audioError, setAudioError] = useState(false);
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.addEventListener('timeupdate', updateProgress);
-      audioRef.current.addEventListener('ended', () => {
-        setIsPlaying(false);
-        setProgress(0);
-        setCurrentTime(0);
-      });
+      audioRef.current.addEventListener('ended', handleAudioEnd);
+      audioRef.current.addEventListener('error', handleAudioError);
     }
 
     return () => {
       if (audioRef.current) {
         audioRef.current.removeEventListener('timeupdate', updateProgress);
-        audioRef.current.removeEventListener('ended', () => {
-          setIsPlaying(false);
-          setProgress(0);
-          setCurrentTime(0);
-        });
+        audioRef.current.removeEventListener('ended', handleAudioEnd);
+        audioRef.current.removeEventListener('error', handleAudioError);
       }
     };
   }, []);
+
+  const handleAudioEnd = () => {
+    setIsPlaying(false);
+    setProgress(0);
+    setCurrentTime(0);
+  };
+
+  const handleAudioError = () => {
+    setAudioError(true);
+    setIsPlaying(false);
+    console.log("Audio error for:", audioUrl);
+  };
 
   const updateProgress = () => {
     if (audioRef.current) {
@@ -62,20 +71,48 @@ const VoicePitchCard = ({
   };
 
   const togglePlay = () => {
+    if (audioError) {
+      toast({
+        title: "Audio Unavailable",
+        description: "This audio file cannot be played. Try another profile.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (isPlaying) {
       audioRef.current?.pause();
     } else {
-      audioRef.current?.play();
+      const playPromise = audioRef.current?.play();
+      if (playPromise) {
+        playPromise.catch(error => {
+          console.error("Play failed:", error);
+          setAudioError(true);
+          toast({
+            title: "Audio Unavailable",
+            description: "This audio file cannot be played. Try another profile.",
+            variant: "destructive",
+          });
+        });
+      }
     }
     setIsPlaying(!isPlaying);
   };
 
   const toggleBookmark = () => {
     setIsBookmarked(!isBookmarked);
+    toast({
+      title: isBookmarked ? "Removed from bookmarks" : "Added to bookmarks",
+      description: `${isAnonymous ? "Anonymous profile" : name} has been ${isBookmarked ? "removed from" : "added to"} your bookmarks.`,
+    });
   };
 
   const handleLike = () => {
     setLikesCount(likesCount + 1);
+    toast({
+      title: "Profile liked",
+      description: `You liked ${isAnonymous ? "an anonymous profile" : name}'s voice pitch.`,
+    });
   };
 
   const formatTime = (seconds: number) => {

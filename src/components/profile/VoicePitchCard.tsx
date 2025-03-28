@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Volume2, Pause, Bookmark, Share2, ThumbsUp, Waveform } from "lucide-react";
+import { Volume2, Pause, Bookmark, Share2, ThumbsUp, Music } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 

@@ -1,28 +1,48 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import VideoResumeCard from "@/components/profile/VideoResumeCard";
 import VoicePitchCard from "@/components/profile/VoicePitchCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Filter, SlidersHorizontal } from "lucide-react";
+import { 
+  Search, 
+  Filter, 
+  SlidersHorizontal, 
+  TrendingUp, 
+  Clock, 
+  ThumbsUp,
+  SortAsc
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { dummyProfiles } from "@/data/dummyProfiles";
 import ProfileForm from "@/components/profile/ProfileForm";
 import { useProfiles } from "@/hooks/use-profiles";
+import { ProfileType } from "@/types/profile";
+
+type SortOption = "latest" | "trending" | "popular";
 
 const Discover = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortOption, setSortOption] = useState<SortOption>("latest");
   const { profiles } = useProfiles();
   const itemsPerPage = 12;
 
   // First use stored profiles, then fall back to dummy profiles if needed
   const allProfiles = profiles.length > 0 ? profiles : dummyProfiles;
 
-  const filterProfiles = () => {
-    return allProfiles.filter(profile => {
+  const filterAndSortProfiles = () => {
+    // Filter first
+    const filtered = allProfiles.filter(profile => {
       if (selectedTab === "video" && !profile.videoUrl) return false;
       if (selectedTab === "audio" && !profile.audioUrl) return false;
       
@@ -33,9 +53,25 @@ const Discover = () => {
         profile.skills.some(skill => skill.toLowerCase().includes(searchLower))
       );
     });
+    
+    // Then sort
+    return [...filtered].sort((a, b) => {
+      switch (sortOption) {
+        case "trending":
+          // For demo purposes, using id to simulate trending (newer ids are "trending")
+          return b.id.localeCompare(a.id);
+        case "popular":
+          // For demo purposes, use a combination of id length and name length to simulate popularity
+          return (b.id.length + b.name.length) - (a.id.length + a.name.length);
+        case "latest":
+        default:
+          // For demo purposes, using id to simulate latest (newer ids are more recent)
+          return b.id.localeCompare(a.id);
+      }
+    });
   };
 
-  const filteredProfiles = filterProfiles();
+  const filteredProfiles = filterAndSortProfiles();
   const totalPages = Math.ceil(filteredProfiles.length / itemsPerPage);
   const paginatedProfiles = filteredProfiles.slice(
     (currentPage - 1) * itemsPerPage,
@@ -50,6 +86,22 @@ const Discover = () => {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
+  };
+  
+  const handleSortChange = (value: string) => {
+    setSortOption(value as SortOption);
+    setCurrentPage(1);
+  };
+  
+  const renderSortIcon = () => {
+    switch (sortOption) {
+      case "trending":
+        return <TrendingUp className="h-4 w-4 mr-2" />;
+      case "popular":
+        return <ThumbsUp className="h-4 w-4 mr-2" />;
+      default:
+        return <Clock className="h-4 w-4 mr-2" />;
+    }
   };
 
   return (
@@ -70,6 +122,36 @@ const Discover = () => {
                 onChange={handleSearch}
               />
             </div>
+            <Select value={sortOption} onValueChange={handleSortChange}>
+              <SelectTrigger className="w-[180px]">
+                <div className="flex items-center">
+                  {renderSortIcon()}
+                  <SelectValue placeholder="Sort by" />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem value="latest">
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-2" />
+                      Latest
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="trending">
+                    <div className="flex items-center">
+                      <TrendingUp className="h-4 w-4 mr-2" />
+                      Trending
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="popular">
+                    <div className="flex items-center">
+                      <ThumbsUp className="h-4 w-4 mr-2" />
+                      Most Popular
+                    </div>
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
             <Button variant="outline" className="md:w-auto">
               <Filter className="h-4 w-4 mr-2" />
               Filter

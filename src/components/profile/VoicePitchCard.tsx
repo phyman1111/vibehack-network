@@ -4,6 +4,7 @@ import { Volume2, Pause, Bookmark, Share2, ThumbsUp, Trash2, Music } from "lucid
 import { useState, useRef, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { useLikes } from "@/hooks/use-likes";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,6 +48,14 @@ const VoicePitchCard = ({
   const [isLoading, setIsLoading] = useState(true);
 
   const { deleteProfile } = useProfiles();
+  const { toggleLike, isLiked } = useLikes();
+  
+  // Check if this profile is liked
+  const [isProfileLiked, setIsProfileLiked] = useState(false);
+  
+  useEffect(() => {
+    setIsProfileLiked(isLiked(id));
+  }, [id, isLiked]);
   
   useEffect(() => {
     // Create audio element
@@ -154,10 +163,18 @@ const VoicePitchCard = ({
   };
 
   const handleLike = () => {
-    setLikesCount(likesCount + 1);
+    const newLikeState = toggleLike(id);
+    setIsProfileLiked(newLikeState);
+    
+    if (newLikeState) {
+      setLikesCount(likesCount + 1);
+    } else {
+      setLikesCount(Math.max(0, likesCount - 1));
+    }
+    
     toast({
-      title: "Profile liked",
-      description: `You liked ${isAnonymous ? "an anonymous profile" : name}'s voice pitch.`,
+      title: newLikeState ? "Profile liked" : "Like removed",
+      description: `You ${newLikeState ? "liked" : "unliked"} ${isAnonymous ? "an anonymous profile" : name}'s voice pitch.`,
     });
   };
   
@@ -179,7 +196,7 @@ const VoicePitchCard = ({
   };
 
   return (
-    <Card className="overflow-hidden interactive-card bg-secondary/50">
+    <Card className="overflow-hidden interactive-card bg-secondary/50 transition-all duration-300 hover:shadow-lg">
       <div className="h-32 bg-gradient-to-r from-vibehire-primary/20 to-vibehire-accent/20 flex items-center justify-center">
         <div className="relative p-4 w-full h-full flex flex-col justify-center">
           <div className="absolute inset-0 flex items-center justify-center opacity-30">
@@ -261,7 +278,9 @@ const VoicePitchCard = ({
               className="rounded-full" 
               onClick={handleLike}
             >
-              <ThumbsUp className="h-5 w-5 text-muted-foreground" />
+              <ThumbsUp 
+                className={`h-5 w-5 ${isProfileLiked ? 'fill-vibehire-primary text-vibehire-primary' : 'text-muted-foreground'}`} 
+              />
               <span className="sr-only">Like</span>
             </Button>
             <AlertDialog>
@@ -291,6 +310,10 @@ const VoicePitchCard = ({
               </AlertDialogContent>
             </AlertDialog>
           </div>
+        </div>
+        <div className="mt-4 flex items-center text-sm text-muted-foreground">
+          <ThumbsUp className="h-3.5 w-3.5 mr-1 inline" />
+          <span>{likesCount} likes</span>
         </div>
       </CardContent>
       

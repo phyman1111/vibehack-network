@@ -4,6 +4,7 @@ import { Play, Bookmark, Share2, ThumbsUp, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useProfiles } from "@/hooks/use-profiles";
+import { useLikes } from "@/hooks/use-likes";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,8 +43,15 @@ const VideoResumeCard = ({
   const [isLoading, setIsLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
-  
   const { deleteProfile } = useProfiles();
+  const { toggleLike, isLiked } = useLikes();
+  
+  // Check if this profile is liked
+  const [isProfileLiked, setIsProfileLiked] = useState(false);
+  
+  useEffect(() => {
+    setIsProfileLiked(isLiked(id));
+  }, [id, isLiked]);
 
   useEffect(() => {
     // Reset video error state when videoUrl changes
@@ -88,6 +96,37 @@ const VideoResumeCard = ({
     }
   };
 
+  const toggleBookmark = () => {
+    setIsBookmarked(!isBookmarked);
+    toast({
+      title: isBookmarked ? "Removed from bookmarks" : "Added to bookmarks",
+      description: `${isAnonymous ? "Anonymous profile" : name} has been ${isBookmarked ? "removed from" : "added to"} your bookmarks.`,
+    });
+  };
+
+  const handleLike = () => {
+    const newLikeState = toggleLike(id);
+    setIsProfileLiked(newLikeState);
+    
+    if (newLikeState) {
+      setLikesCount(likesCount + 1);
+    } else {
+      setLikesCount(Math.max(0, likesCount - 1));
+    }
+    
+    toast({
+      title: newLikeState ? "Profile liked" : "Like removed",
+      description: `You ${newLikeState ? "liked" : "unliked"} ${isAnonymous ? "an anonymous profile" : name}'s video resume.`,
+    });
+  };
+
+  const handleShare = () => {
+    toast({
+      title: "Share Profile",
+      description: `Sharing options for ${isAnonymous ? "this anonymous profile" : name} will appear soon.`,
+    });
+  };
+
   const handleVideoError = () => {
     setVideoError(true);
     setIsPlaying(false);
@@ -99,35 +138,12 @@ const VideoResumeCard = ({
     setIsLoading(false);
   };
 
-  const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
-    toast({
-      title: isBookmarked ? "Removed from bookmarks" : "Added to bookmarks",
-      description: `${isAnonymous ? "Anonymous profile" : name} has been ${isBookmarked ? "removed from" : "added to"} your bookmarks.`,
-    });
-  };
-
-  const handleLike = () => {
-    setLikesCount(likesCount + 1);
-    toast({
-      title: "Profile liked",
-      description: `You liked ${isAnonymous ? "an anonymous profile" : name}'s video resume.`,
-    });
-  };
-
-  const handleShare = () => {
-    toast({
-      title: "Share Profile",
-      description: `Sharing options for ${isAnonymous ? "this anonymous profile" : name} will appear soon.`,
-    });
-  };
-
   const handleDelete = () => {
     deleteProfile(id);
   };
 
   return (
-    <Card className="overflow-hidden interactive-card bg-secondary/50">
+    <Card className="overflow-hidden interactive-card bg-secondary/50 transition-all duration-300 hover:shadow-lg">
       <div className="relative aspect-video bg-gray-900 overflow-hidden">
         {!isPlaying ? (
           <>
@@ -222,7 +238,9 @@ const VideoResumeCard = ({
               className="rounded-full" 
               onClick={handleLike}
             >
-              <ThumbsUp className="h-5 w-5 text-muted-foreground" />
+              <ThumbsUp 
+                className={`h-5 w-5 ${isProfileLiked ? 'fill-vibehire-primary text-vibehire-primary' : 'text-muted-foreground'}`} 
+              />
               <span className="sr-only">Like</span>
             </Button>
             <AlertDialog>
@@ -252,6 +270,10 @@ const VideoResumeCard = ({
               </AlertDialogContent>
             </AlertDialog>
           </div>
+        </div>
+        <div className="mt-4 flex items-center text-sm text-muted-foreground">
+          <ThumbsUp className="h-3.5 w-3.5 mr-1 inline" />
+          <span>{likesCount} likes</span>
         </div>
       </CardContent>
     </Card>

@@ -1,259 +1,127 @@
-import { Button } from "@/components/ui/button";
-import { Search, BellRing, User, Menu, BellOff, X } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
-  DropdownMenuPortal
-} from "@/components/ui/dropdown-menu";
-import { useState, useContext, useEffect } from "react";
-import { AppContext } from "../../App";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { AppContext } from "@/App";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Bell, Menu, Search } from "lucide-react";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { 
-    isAnonymous, 
-    setIsAnonymous, 
-    searchQuery, 
-    setSearchQuery,
-    notifications,
-    markAllNotificationsAsRead 
-  } = useContext(AppContext);
-  const [localSearchQuery, setLocalSearchQuery] = useState("");
-  
-  // Initialize local search with global search on component mount
-  useEffect(() => {
-    setLocalSearchQuery(searchQuery);
-  }, [searchQuery]);
-  
-  const isActive = (path: string) => {
-    return location.pathname === path ? "text-vibehire-primary font-medium" : "text-foreground/80 hover:text-foreground transition-colors";
-  };
+  const { isAnonymous, setIsAnonymous, searchQuery, setSearchQuery, notifications, markAllNotificationsAsRead } = useContext(AppContext);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSearchQuery(localSearchQuery);
-    navigate("/discover");
-    toast.success(`Searching for "${localSearchQuery}"`);
-  };
-
-  const unreadNotificationsCount = notifications.filter(n => !n.read).length;
+  const unreadNotifications = notifications.filter(n => !n.read).length;
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border">
+    <header className="bg-background sticky top-0 z-50 border-b">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-blue-gradient flex items-center justify-center">
-              <span className="text-white font-bold">V</span>
-            </div>
-            <span className="font-bold text-xl text-gradient">VibeHire</span>
-          </Link>
-          
-          <nav className="hidden md:flex items-center gap-6">
-            <Link to="/discover" className={isActive("/discover")}>
-              Discover
-            </Link>
-            <Link to="/jobs" className={isActive("/jobs")}>
-              Jobs
-            </Link>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="text-foreground/80 hover:text-foreground transition-colors">
-                  Company
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem asChild>
-                  <Link to="/about">About Us</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/careers">Careers</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/contact">Contact</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="text-foreground/80 hover:text-foreground transition-colors">
-                  Legal
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem asChild>
-                  <Link to="/privacy">Privacy Policy</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/terms">Terms of Service</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/cookies">Cookie Policy</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </nav>
-        </div>
+        <Link to="/" className="font-bold text-2xl">
+          VibeHire
+        </Link>
 
         <div className="flex items-center gap-4">
-          <form onSubmit={handleSearch} className="hidden md:flex relative">
-            <Input
-              value={localSearchQuery}
-              onChange={(e) => setLocalSearchQuery(e.target.value)}
-              placeholder="Search talents or jobs..."
-              className="w-64 pl-10"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Button type="submit" variant="ghost" className="absolute right-0 top-0 h-full">
-              <span className="sr-only">Search</span>
-            </Button>
-          </form>
+          <Input 
+            type="search" 
+            placeholder="Search..." 
+            className="max-w-xs hidden md:block"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative hidden md:flex">
-                <BellRing className="h-5 w-5" />
-                {unreadNotificationsCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 bg-vibehire-primary">
-                    {unreadNotificationsCount}
-                  </Badge>
-                )}
+          <Button variant="ghost" size="icon" asChild>
+            <Link to="/discover">
+              <Search className="h-5 w-5" />
+              <span className="sr-only">Search</span>
+            </Link>
+          </Button>
+
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Bell className="h-5 w-5 relative">
+                  {unreadNotifications > 0 && (
+                    <div className="absolute inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-1 -right-1 dark:border-gray-900">
+                      {unreadNotifications}
+                    </div>
+                  )}
+                </Bell>
+                <span className="sr-only">Notifications</span>
               </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-80 p-0">
-              <div className="p-3 border-b border-border flex items-center justify-between">
-                <h3 className="font-semibold">Notifications</h3>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="h-8 text-sm text-muted-foreground hover:text-foreground"
-                  onClick={markAllNotificationsAsRead}
-                >
+            </SheetTrigger>
+            <SheetContent className="w-96">
+              <SheetHeader>
+                <SheetTitle>Notifications</SheetTitle>
+                <SheetDescription>
+                  {notifications.length === 0 ? "No notifications yet." : (
+                    <ul>
+                      {notifications.map(notification => (
+                        <li key={notification.id} className="py-2">
+                          {notification.text}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </SheetDescription>
+              </SheetHeader>
+              <div className="grid gap-4 py-4">
+                <Button onClick={markAllNotificationsAsRead} disabled={unreadNotifications === 0}>
                   Mark all as read
                 </Button>
               </div>
-              <div className="max-h-80 overflow-y-auto">
-                {notifications.length > 0 ? (
-                  notifications.map(notification => (
-                    <div 
-                      key={notification.id} 
-                      className={`p-3 border-b border-border ${notification.read ? '' : 'bg-secondary/40'}`}
-                    >
-                      <p className="text-sm">{notification.text}</p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="p-3 text-center text-muted-foreground">
-                    No notifications
-                  </div>
-                )}
-              </div>
-            </PopoverContent>
-          </Popover>
+            </SheetContent>
+          </Sheet>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <User className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Account Settings</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <div className="p-2">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label>Anonymous Mode</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Hide your identity from other users
-                    </p>
-                  </div>
-                  <Switch
-                    checked={isAnonymous}
-                    onCheckedChange={(checked) => {
-                      setIsAnonymous(checked);
-                      toast.success(`Anonymous mode ${checked ? 'enabled' : 'disabled'}`);
-                    }}
-                  />
-                </div>
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <ThemeToggle />
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            <Menu className="h-5 w-5" />
-          </Button>
+          {isAnonymous ? (
+            <Button onClick={() => setIsAnonymous(false)}>
+              Enable Profile
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Menu</span>
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>User Menu</SheetTitle>
+                    <SheetDescription>
+                      Manage your account settings and preferences.
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div className="grid gap-4 py-4">
+                    <Link to="/profile">
+                      <Button>Profile</Button>
+                    </Link>
+                    <Link to="/settings">
+                      <Button>Settings</Button>
+                    </Link>
+                    <Button onClick={() => setIsAnonymous(true)}>
+                      Disable Profile
+                    </Button>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          )}
         </div>
       </div>
-      
-      {isMenuOpen && (
-        <div className="md:hidden bg-background border-b border-border py-4 animate-slide-up">
-          <nav className="container flex flex-col gap-4">
-            <Link to="/discover" className="text-foreground/80 hover:text-foreground transition-colors py-2">
-              Discover
-            </Link>
-            <Link to="/jobs" className="text-foreground/80 hover:text-foreground transition-colors py-2">
-              Jobs
-            </Link>
-            <div className="py-2">
-              <p className="text-sm font-medium text-muted-foreground mb-2">Company</p>
-              <div className="pl-4 space-y-2">
-                <Link to="/about" className="block text-foreground/80 hover:text-foreground transition-colors">
-                  About Us
-                </Link>
-                <Link to="/careers" className="block text-foreground/80 hover:text-foreground transition-colors">
-                  Careers
-                </Link>
-                <Link to="/contact" className="block text-foreground/80 hover:text-foreground transition-colors">
-                  Contact
-                </Link>
-              </div>
-            </div>
-            <div className="py-2">
-              <p className="text-sm font-medium text-muted-foreground mb-2">Legal</p>
-              <div className="pl-4 space-y-2">
-                <Link to="/privacy" className="block text-foreground/80 hover:text-foreground transition-colors">
-                  Privacy Policy
-                </Link>
-                <Link to="/terms" className="block text-foreground/80 hover:text-foreground transition-colors">
-                  Terms of Service
-                </Link>
-                <Link to="/cookies" className="block text-foreground/80 hover:text-foreground transition-colors">
-                  Cookie Policy
-                </Link>
-              </div>
-            </div>
-          </nav>
-        </div>
-      )}
     </header>
   );
 };

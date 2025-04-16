@@ -1,9 +1,20 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, Volume2, Bookmark, Share2, ThumbsUp } from "lucide-react";
+import { Play, Bookmark, Share2, ThumbsUp, Trash2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useProfiles } from "@/hooks/use-profiles";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface VideoResumeCardProps {
   id: string;
@@ -31,6 +42,8 @@ const VideoResumeCard = ({
   const [isLoading, setIsLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { toast } = useToast();
+  
+  const { deleteProfile } = useProfiles();
 
   useEffect(() => {
     // Reset video error state when videoUrl changes
@@ -107,6 +120,10 @@ const VideoResumeCard = ({
       title: "Share Profile",
       description: `Sharing options for ${isAnonymous ? "this anonymous profile" : name} will appear soon.`,
     });
+  };
+
+  const handleDelete = () => {
+    deleteProfile(id);
   };
 
   return (
@@ -208,15 +225,32 @@ const VideoResumeCard = ({
               <ThumbsUp className="h-5 w-5 text-muted-foreground" />
               <span className="sr-only">Like</span>
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="rounded-full"
-              onClick={handleShare}
-            >
-              <Share2 className="h-5 w-5 text-muted-foreground" />
-              <span className="sr-only">Share</span>
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="rounded-full text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="h-5 w-5" />
+                  <span className="sr-only">Delete</span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this profile?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete this video resume profile.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </CardContent>

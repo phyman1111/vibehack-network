@@ -1,10 +1,21 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Volume2, Pause, Bookmark, Share2, ThumbsUp, Music } from "lucide-react";
+import { Volume2, Pause, Bookmark, Share2, ThumbsUp, Trash2, Music } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useProfiles } from "@/hooks/use-profiles";
 
 interface VoicePitchCardProps {
   id: string;
@@ -35,6 +46,8 @@ const VoicePitchCard = ({
   const [audioError, setAudioError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const { deleteProfile } = useProfiles();
+  
   useEffect(() => {
     // Create audio element
     const audio = new Audio(audioUrl);
@@ -161,6 +174,10 @@ const VoicePitchCard = ({
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
+  const handleDelete = () => {
+    deleteProfile(id);
+  };
+
   return (
     <Card className="overflow-hidden interactive-card bg-secondary/50">
       <div className="h-32 bg-gradient-to-r from-vibehire-primary/20 to-vibehire-accent/20 flex items-center justify-center">
@@ -247,15 +264,32 @@ const VoicePitchCard = ({
               <ThumbsUp className="h-5 w-5 text-muted-foreground" />
               <span className="sr-only">Like</span>
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="rounded-full"
-              onClick={handleShare}
-            >
-              <Share2 className="h-5 w-5 text-muted-foreground" />
-              <span className="sr-only">Share</span>
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="rounded-full text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="h-5 w-5" />
+                  <span className="sr-only">Delete</span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this profile?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete this voice pitch profile.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground">
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </CardContent>

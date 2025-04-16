@@ -15,6 +15,7 @@ import Careers from "./pages/company/Careers";
 import Contact from "./pages/company/Contact";
 import Jobs from "./pages/Jobs";
 import { useState } from "react";
+import { ProfilesProvider } from "./hooks/use-profiles";
 
 // Create context for global state
 import { createContext } from "react";
@@ -63,28 +64,30 @@ const App = () => {
     }}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/discover" element={<Discover />} />
-              <Route path="/jobs" element={<Jobs />} />
-              <Route path="/about" element={<AboutUs />} />
-              <Route path="/careers" element={<Careers />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/privacy" element={<Privacy />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/cookies" element={<Cookies />} />
-              
-              {/* Redirect routes for any potentially broken links */}
-              <Route path="/profile" element={<Navigate to="/" />} />
-              <Route path="/settings" element={<Navigate to="/" />} />
-              
-              {/* Catch-all route for non-existent pages */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+          <ProfilesProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/discover" element={<Discover />} />
+                <Route path="/jobs" element={<Jobs />} />
+                <Route path="/about" element={<AboutUs />} />
+                <Route path="/careers" element={<Careers />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/cookies" element={<Cookies />} />
+                
+                {/* Redirect routes for any potentially broken links */}
+                <Route path="/profile" element={<Navigate to="/" />} />
+                <Route path="/settings" element={<Navigate to="/" />} />
+                
+                {/* Catch-all route for non-existent pages */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </ProfilesProvider>
         </TooltipProvider>
       </QueryClientProvider>
     </AppContext.Provider>

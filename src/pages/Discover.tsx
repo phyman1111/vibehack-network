@@ -8,15 +8,21 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Filter, SlidersHorizontal } from "lucide-react";
 import { dummyProfiles } from "@/data/dummyProfiles";
+import ProfileForm from "@/components/profile/ProfileForm";
+import { useProfiles } from "@/hooks/use-profiles";
 
 const Discover = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
+  const { profiles } = useProfiles();
   const itemsPerPage = 12;
 
+  // First use stored profiles, then fall back to dummy profiles if needed
+  const allProfiles = profiles.length > 0 ? profiles : dummyProfiles;
+
   const filterProfiles = () => {
-    return dummyProfiles.filter(profile => {
+    return allProfiles.filter(profile => {
       if (selectedTab === "video" && !profile.videoUrl) return false;
       if (selectedTab === "audio" && !profile.audioUrl) return false;
       
@@ -50,7 +56,10 @@ const Discover = () => {
     <Layout>
       <div className="container py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">Discover Talent</h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-3xl font-bold">Discover Talent</h1>
+            <ProfileForm />
+          </div>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
@@ -81,31 +90,38 @@ const Discover = () => {
           
           <TabsContent value="all" className="mt-0">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginatedProfiles.map(profile => (
-                profile.videoUrl ? (
-                  <VideoResumeCard
-                    key={profile.id}
-                    id={profile.id}
-                    name={profile.name}
-                    title={profile.title}
-                    videoUrl={profile.videoUrl}
-                    thumbnailUrl={profile.thumbnailUrl || ''}
-                    skills={profile.skills}
-                    isAnonymous={profile.isAnonymous}
-                  />
-                ) : (
-                  <VoicePitchCard
-                    key={profile.id}
-                    id={profile.id}
-                    name={profile.name}
-                    title={profile.title}
-                    audioUrl={profile.audioUrl || ''}
-                    skills={profile.skills}
-                    duration={profile.audioDuration || 60}
-                    isAnonymous={profile.isAnonymous}
-                  />
-                )
-              ))}
+              {paginatedProfiles.length > 0 ? (
+                paginatedProfiles.map(profile => (
+                  profile.videoUrl ? (
+                    <VideoResumeCard
+                      key={profile.id}
+                      id={profile.id}
+                      name={profile.name}
+                      title={profile.title}
+                      videoUrl={profile.videoUrl}
+                      thumbnailUrl={profile.thumbnailUrl || ''}
+                      skills={profile.skills}
+                      isAnonymous={profile.isAnonymous}
+                    />
+                  ) : (
+                    <VoicePitchCard
+                      key={profile.id}
+                      id={profile.id}
+                      name={profile.name}
+                      title={profile.title}
+                      audioUrl={profile.audioUrl || ''}
+                      skills={profile.skills}
+                      duration={profile.audioDuration || 60}
+                      isAnonymous={profile.isAnonymous}
+                    />
+                  )
+                ))
+              ) : (
+                <div className="col-span-3 text-center py-12">
+                  <p className="text-lg text-muted-foreground mb-4">No profiles found.</p>
+                  <ProfileForm />
+                </div>
+              )}
             </div>
           </TabsContent>
           

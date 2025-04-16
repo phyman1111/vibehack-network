@@ -260,7 +260,7 @@ const VoicePitchCard = ({
         </div>
       </CardContent>
       
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes pulse {
           0% {
             height: 10px;
@@ -269,7 +269,7 @@ const VoicePitchCard = ({
             height: 40px;
           }
         }
-      `}</style>
+      `}} />
     </Card>
   );
 };

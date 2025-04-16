@@ -7,6 +7,7 @@ import FeaturedProfilesSection from "@/components/home/FeaturedProfilesSection";
 import AnonymousDemoSection from "@/components/home/AnonymousDemoSection";
 import CTASection from "@/components/home/CTASection";
 import { AppContext } from "@/App";
+import ShortsPreviewSection from "@/components/home/ShortsPreviewSection";
 
 const Index = () => {
   const { isAnonymous, setIsAnonymous } = useContext(AppContext);
@@ -18,6 +19,9 @@ const Index = () => {
       
       {/* Features Section */}
       <FeaturesSection />
+      
+      {/* Shorts Preview Section */}
+      <ShortsPreviewSection />
       
       {/* Featured Profiles Section */}
       <FeaturedProfilesSection />

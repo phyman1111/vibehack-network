@@ -3,11 +3,18 @@ import Layout from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Search, MapPin, Briefcase, Clock } from "lucide-react";
-import { useState } from "react";
+import { Search, MapPin, Briefcase, Clock, Filter } from "lucide-react";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { AppContext } from "@/App";
 
 const Jobs = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [savedJobs, setSavedJobs] = useState<number[]>([]);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { addNotification } = useContext(AppContext);
   
   const jobListings = [
     {
@@ -85,6 +92,34 @@ const Jobs = () => {
     job.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const toggleSaveJob = (jobId: number) => {
+    if (savedJobs.includes(jobId)) {
+      setSavedJobs(savedJobs.filter(id => id !== jobId));
+      toast({
+        title: "Job removed from saved",
+        description: "The job has been removed from your saved jobs."
+      });
+    } else {
+      setSavedJobs([...savedJobs, jobId]);
+      toast({
+        title: "Job saved",
+        description: "The job has been added to your saved jobs."
+      });
+      addNotification("You saved a new job. View it in your saved jobs section.");
+    }
+  };
+
+  const handleApply = (jobTitle: string, company: string) => {
+    toast({
+      title: "Application submitted",
+      description: `Your application for ${jobTitle} at ${company} has been submitted.`,
+    });
+    addNotification(`You applied for ${jobTitle} at ${company}. Check your email for confirmation.`);
+    setTimeout(() => {
+      navigate("/discover");
+    }, 1500);
+  };
+
   return (
     <Layout>
       <div className="container py-8">
@@ -103,13 +138,17 @@ const Jobs = () => {
             <Button variant="default" className="bg-blue-gradient hover:opacity-90">
               Search Jobs
             </Button>
+            <Button variant="outline" className="md:w-auto">
+              <Filter className="h-4 w-4 mr-2" /> 
+              Filters
+            </Button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4">
           {filteredJobs.length > 0 ? (
             filteredJobs.map((job) => (
-              <Card key={job.id} className="interactive-card bg-secondary/50">
+              <Card key={job.id} className="interactive-card bg-secondary/50 hover:shadow-md transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div>
@@ -148,11 +187,18 @@ const Jobs = () => {
                     </div>
                     
                     <div className="flex md:flex-col gap-2">
-                      <Button className="bg-blue-gradient hover:opacity-90 text-white">
+                      <Button 
+                        className="bg-blue-gradient hover:opacity-90 text-white"
+                        onClick={() => handleApply(job.title, job.company)}
+                      >
                         Apply Now
                       </Button>
-                      <Button variant="outline" className="border-vibehire-primary text-vibehire-primary hover:bg-vibehire-primary/10">
-                        Save Job
+                      <Button 
+                        variant="outline" 
+                        className={`${savedJobs.includes(job.id) ? "bg-vibehire-primary/10 border-vibehire-primary" : "border-vibehire-primary"} text-vibehire-primary hover:bg-vibehire-primary/10`}
+                        onClick={() => toggleSaveJob(job.id)}
+                      >
+                        {savedJobs.includes(job.id) ? "Saved" : "Save Job"}
                       </Button>
                     </div>
                   </div>

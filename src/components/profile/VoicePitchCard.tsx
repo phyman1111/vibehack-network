@@ -260,18 +260,16 @@ const VoicePitchCard = ({
         </div>
       </CardContent>
       
-      <style>
-        {`
-          @keyframes pulse {
-            0% {
-              height: 10px;
-            }
-            100% {
-              height: 40px;
-            }
+      <style jsx>{`
+        @keyframes pulse {
+          0% {
+            height: 10px;
           }
-        `}
-      </style>
+          100% {
+            height: 40px;
+          }
+        }
+      `}</style>
     </Card>
   );
 };

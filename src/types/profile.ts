@@ -1,6 +1,6 @@
 
 export interface ProfileType {
-  id: number;
+  id: string;
   name: string;
   title: string;
   skills: string[];

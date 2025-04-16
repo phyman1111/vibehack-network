@@ -42,9 +42,9 @@ const VideoResumeCard = ({
   const togglePlay = () => {
     if (videoError) {
       toast({
-        title: "Video Unavailable",
-        description: "This video file cannot be played. Try another profile.",
-        variant: "destructive",
+        title: "Hey! This is just a demo",
+        description: "This video file is a placeholder for demonstration purposes.",
+        variant: "default",
       });
       return;
     }
@@ -65,9 +65,9 @@ const VideoResumeCard = ({
         setVideoError(true);
         setIsPlaying(false);
         toast({
-          title: "Video Playback Failed",
-          description: "This video cannot be played. Please try another profile.",
-          variant: "destructive",
+          title: "Hey! This is just a demo",
+          description: "This video file is a placeholder for demonstration purposes.",
+          variant: "default",
         });
       });
     } else {

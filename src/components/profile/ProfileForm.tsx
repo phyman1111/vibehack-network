@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ProfileType } from "@/types/profile";
@@ -12,7 +11,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { UserPlus } from "lucide-react";
 
-type FormValues = Omit<ProfileType, "id">;
+type FormValues = {
+  name: string;
+  title: string;
+  skills: string | string[];
+  isAnonymous: boolean;
+  videoUrl?: string;
+  audioUrl?: string;
+};
 
 const ProfileForm = () => {
   const { addProfile } = useProfiles();
@@ -22,14 +28,14 @@ const ProfileForm = () => {
     defaultValues: {
       name: "",
       title: "",
-      skills: [],
+      skills: "",
       isAnonymous: false,
     }
   });
   
   const onSubmit = (data: FormValues) => {
     // Convert comma-separated skills string to array
-    const skillsArray = data.skills && typeof data.skills === 'string' 
+    const skillsArray = typeof data.skills === 'string' 
       ? data.skills.split(',').map(skill => skill.trim()) 
       : (Array.isArray(data.skills) ? data.skills : []);
       

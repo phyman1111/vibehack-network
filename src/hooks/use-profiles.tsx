@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 
 interface ProfilesContextType {
   profiles: ProfileType[];
-  addProfile: (profile: Omit<ProfileType, "id">) => void;
+  addProfile: (profile: Omit<ProfileType, "id">) => string;
   updateProfile: (id: string, profile: Partial<ProfileType>) => void;
   deleteProfile: (id: string) => void;
   getFeaturedVideoProfiles: () => ProfileType[];
@@ -39,15 +39,18 @@ export const ProfilesProvider = ({ children }: ProfilesProviderProps) => {
         setProfiles(JSON.parse(savedProfiles));
       } catch (error) {
         console.error("Failed to parse profiles from localStorage:", error);
+        // Initialize with empty array if parsing fails
+        localStorage.setItem("vibehire_profiles", JSON.stringify([]));
       }
+    } else {
+      // Initialize localStorage with empty array if it doesn't exist
+      localStorage.setItem("vibehire_profiles", JSON.stringify([]));
     }
   }, []);
 
   // Save profiles to localStorage whenever they change
   useEffect(() => {
-    if (profiles.length > 0) {
-      localStorage.setItem("vibehire_profiles", JSON.stringify(profiles));
-    }
+    localStorage.setItem("vibehire_profiles", JSON.stringify(profiles));
   }, [profiles]);
 
   const addProfile = (profileData: Omit<ProfileType, "id">) => {

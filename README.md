@@ -1,4 +1,3 @@
-
 # VibeHire - Video Resume Platform
 
 ## About VibeHire
